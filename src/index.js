@@ -13,12 +13,12 @@ import "./index.css";
 
 // Create an http link:
 const httpLink = new HttpLink({
-  uri: 'http://localhost:4000/'
+  uri: 'http://groupchat-app-graphql.herokuapp.com/'
 });
 
 // Create a WebSocket link:
 const wsLink = new WebSocketLink({
-  uri: `ws://localhost:4000/`,
+  uri: `ws://groupchat-app-graphql.herokuapp.com/,
   options: {
     reconnect: true,
     lazy: true,
