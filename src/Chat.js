@@ -23,7 +23,8 @@ const Chat = props => {
     props.chat.subscribeToMore({
       document: ChatSubscription,
       variables: {
-	group_id: all_groups
+	group_id: props.all_groups,
+	sender_email: props.sender_email
       },
       updateQuery: (prev, { subscriptionData }) => {
         if (!subscriptionData.data) return prev;
@@ -43,7 +44,7 @@ const Chat = props => {
     chatBox.current.scrollIntoView();
   };
 
-  const handleChange = async e => {
+  const handleChange = e => {
     setChat(e.target.value);
   };
 
@@ -63,7 +64,6 @@ const Chat = props => {
       },
       update: (store, { data: { newChat } }) => {
         const data = store.readQuery({ query: ChatQuery });
-        data.chats.push(newChat);
         store.writeQuery({ query: ChatQuery, data });
       }
     });
@@ -72,6 +72,7 @@ const Chat = props => {
   const {
     chat: { error, loading, chats },
     all_groups,
+    group_name,
     group_id,
     sender_email,
     sender_name,

@@ -43,8 +43,12 @@ const CreateChatMutation = gql`
 const ChatSubscription = gql`
   subscription(
     $group_id: [ String! ]!
+    $sender_email: String
   ) {
-    newChat(group_id: $group_id) {
+    newChat(
+	group_id: $group_id
+	sender_email: $sender_email
+    ) {
 	id
 	chat_body
 	sender_email

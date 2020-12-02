@@ -10,6 +10,23 @@ const UserQuery = gql`
    }
 `;
 
+const UserLoginMutation = gql`
+  mutation (
+    $email: String!
+    $password: String!
+  ) {
+    userLogin (
+        email: $email
+        password: $password
+    ) {
+        id
+        name
+        email
+    }
+  }
+`;
+
 export {
   UserQuery,
+  UserLoginMutation
 };

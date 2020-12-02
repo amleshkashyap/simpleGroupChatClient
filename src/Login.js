@@ -4,8 +4,8 @@ import Paper from "@material-ui/core/Paper";
 import TextField from "@material-ui/core/TextField";
 import validator from "validator";
 
-const Registration = props => {
-  const [token, setToken] = useState({ name: "", email: "" });
+const Login = props => {
+  const [token, setToken] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
 
   const handleChange = e => {
@@ -13,33 +13,38 @@ const Registration = props => {
   };
 
   const validate = () => {
-    const { name, email } = token;
+    const { email, password } = token;
 
-    if (!name.length) {
-      setError("Name is required");
+    if (!email.length) {
+      setError("Email is required");
+    }
+
+    if (!password.length) {
+	setError("Password is required");
     }
 
     if (!validator.isEmail(email)) {
       setError("Valid email is required");
     }
 
-    if (name.length && validator.isEmail(email)) {
+    if (email.length && validator.isEmail(email)) {
       setError("");
-      localStorage["token"] = JSON.stringify(token);
+      props.userLogin(email, password);
     }
 
   };
 
-  const { name, email } = token;
+  const { email, password } = token;
+
   return (
     <Paper elevation={3} className="paper">
       User Details
       <TextField
         required
         id="outlined-name"
-        label="Name"
-        name="name"
-        value={name}
+        label="Email"
+        name="email"
+        value={email}
         onChange={handleChange}
         variant="outlined"
         style={{ margin: 10 }}
@@ -47,21 +52,21 @@ const Registration = props => {
       <TextField
         required
         id="outlined-email-input"
-        type="email"
-        label="Email"
-        name="email"
-        value={email}
+        type="password"
+        label="Password"
+        name="password"
+        value={password}
         onChange={handleChange}
         variant="outlined"
         className="text-area"
         style={{ margin: 10 }}
       />
       <Button variant="contained" onClick={validate} style={{ margin: 15 }}>
-        Enter Chat
+        Login
       </Button>
       <div>{error}</div>
     </Paper>
   );
 };
 
-export default Registration;
+export default Login;

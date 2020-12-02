@@ -2,15 +2,15 @@ import React, { useState, useEffect } from 'react';
 import Chat from './Chat';
 import User from './User';
 import Group from './Group';
-import Registration from './Frontpage';
+import Login from './Login';
 import { graphql, compose } from 'react-apollo';
 import { GroupQuery } from './Group-Query';
-import { UserQuery } from './User-Query';
+import { UserQuery, UserLoginMutation } from './User-Query';
 
 const App = props => {
   const user =
-    (localStorage.getItem('token') &&
-      JSON.parse(localStorage.getItem('token'))) ||
+    (localStorage.getItem('jwtToken') &&
+      JSON.parse(localStorage.getItem('jwtToken'))) ||
     {};
 
   const [receivingGroupState, setReceivingGroupState] = useState({
@@ -27,17 +27,40 @@ const App = props => {
     setHidden(!hidden);
   };
 
+  const userLogin = async (email, password) => {
+    await props.userLogin({
+      variables: {
+        email,
+        password
+      },
+      update: (store, { data: { userLogin } }) => {
+	if(!userLogin) alert("Invalid Credentials");
+	if(userLogin) {
+	    const jwtToken = {name: userLogin.name, email: userLogin.email, jwt: ""};
+	    localStorage["jwtToken"] = JSON.stringify(jwtToken);
+	    window.location.reload(true);
+	};
+      }
+    });
+  };
+
+  const userLogout = async => {
+    localStorage.removeItem('jwtToken');
+    window.location.reload(true);
+  };
+
   const setStyle = () => {
     setHidden(!hidden);
   };
 
   const { receivingGroupId, receivingGroupName } = receivingGroupState;
+
   const {
     data: { groups, error, loading }
   } = props;
 
   if (loading || error) return null;
-  if (localStorage.getItem('token')) {
+  if (localStorage['jwtToken']) {
     return (
       <div className="chat-page">
         <Group
@@ -45,6 +68,7 @@ const App = props => {
           groups={groups}
 	  user={user}
 	  selectedGroup={setSelectedGroup}
+	  userLogout={userLogout}
         />
         <Chat
           style={{ display: hidden ? 'block' : 'none' }}
@@ -59,9 +83,10 @@ const App = props => {
       </div>
     );
   }
-  return <Registration />;
+  return <Login userLogin={userLogin} />;
 };
 
 export default compose(
-  graphql(GroupQuery)
+  graphql(GroupQuery),
+  graphql(UserLoginMutation, { name: 'userLogin' }),
 )(App);
