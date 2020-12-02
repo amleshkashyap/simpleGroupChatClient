@@ -8,6 +8,8 @@ import {
   ChatSubscription
 } from './Chat-Query';
 
+const FixedWords = ['hi', 'hello', 'how are you', 'cool', 'sure', 'fine', 'great', 'sounds great', 'doing good', 'good', 'bye'];
+
 const Chat = props => {
   const chatBox = useRef(null);
 
@@ -53,6 +55,13 @@ const Chat = props => {
     e.preventDefault();
     const { sender_email, sender_name, group_id } = props;
     if (!chat.length) return null;
+    if(sender_email === "limiteduser@gmail.com") {
+	if(!FixedWords.includes(chat.toLowerCase())) {
+	    alert("You can only message one of the following: " + JSON.stringify(FixedWords));
+	    return null;
+	}
+    };
+
     await props.newChat({
       variables: {
 	sender_id: "5fc4fd303c879950a4419389",
@@ -63,8 +72,12 @@ const Chat = props => {
 	sent_at: (new Date()).getTime()
       },
       update: (store, { data: { newChat } }) => {
-        const data = store.readQuery({ query: ChatQuery });
-        store.writeQuery({ query: ChatQuery, data });
+	if(!newChat) {
+	    alert("Chat not delivered, try again");
+	} else {
+	    const data = store.readQuery({ query: ChatQuery });
+	    store.writeQuery({ query: ChatQuery, data });
+	}
       }
     });
   };
@@ -105,7 +118,7 @@ const Chat = props => {
           )
         )}
       </div>
-      {group_id ? (
+      {group_id && sender_email !== "viewonlyuser@gmail.com" ? (
         <form
           onSubmit={e => handleSubmit(e, chat)}
           ref={chatBox}
