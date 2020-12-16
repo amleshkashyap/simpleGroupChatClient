@@ -1,5 +1,6 @@
 # simpleGroupChatClient
 * Frontend for simple group chat application using graphql-yoga + React + ApolloClient store.
+* Test out the application here - https://simple-group-chat-client.amleshkashyap.vercel.app/
 * You can login using "viewonlyuser@gmail.com"/"password" if you want to check it out in view only mode, and "limiteduser@gmail.com"/"password" if you want to chat, but only a few words are available for chatting to prevent misuse.
 * Developed as part of interview assignment.
 * Client based on (note: UI for this repo is identical to the given repo) - https://github.com/chialuka/chat_app_client
